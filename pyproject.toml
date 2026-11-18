@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "contract-clause-finder"
+version = "0.1.0"
+description = "Buscador local de cláusulas contractuales: playbook, evidencia con offsets, cláusulas faltantes o riesgosas y cobertura"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Angel Salazar" }]
+dependencies = [
+  "fastapi>=0.110",
+  "uvicorn>=0.27",
+  "jinja2>=3.1",
+  "pytest>=8.0",
+]
+
+[project.scripts]
+contract-clauses = "contract_clauses.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+contract_clauses = ["templates/*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

@@ -1,0 +1,65 @@
+SERVICE AGREEMENT
+
+This Service Agreement is made between QuickStack Digital LLC ("Provider") and Pacifico Retail Group S.A. ("Customer").
+
+1. SERVICES
+
+1.1 Provider grants Customer a right to access and use the QuickStack platform. Provider may modify or discontinue features of the platform at any time without notice.
+
+1.2 The platform is provided as is and as available. Provider will use best efforts to keep the platform running but has no obligation to provide support outside its normal hours.
+
+2. TERM
+
+2.1 This Agreement begins on the Effective Date and continues for an initial term of three (3) years. It renews automatically for successive three (3) year periods.
+
+3. FEES
+
+3.1 Customer shall pay all fees in the quoted amount. Fees are non-refundable. Provider may increase the fees at any time at its sole discretion, and payment is due upon receipt of each invoice.
+
+4. AVAILABILITY
+
+4.1 Provider will use reasonable efforts to make the platform available but does not guarantee any level of uptime. Service credits, if any, are the sole and exclusive remedy and are granted at Provider's sole discretion.
+
+5. CUSTOMER DATA
+
+5.1 Provider may use customer data for its own business purposes, including marketing and analytics, and may share it with partners.
+
+6. SECURITY
+
+6.1 Provider will apply reasonable security measures to the platform. Provider is not responsible for any unauthorized access to Customer's account or content.
+
+7. CONFIDENTIALITY
+
+7.1 Provider will try to keep Customer's business information private.
+
+8. INTELLECTUAL PROPERTY
+
+8.1 Customer grants Provider a perpetual, irrevocable license to Customer content for any purpose. Provider retains ownership of the platform and all improvements.
+
+9. WARRANTY
+
+9.1 Provider disclaims all warranties, express or implied, including fitness for a particular purpose.
+
+10. INDEMNITY
+
+10.1 Customer shall indemnify Provider against any and all claims, losses and damages arising from Customer's use of the platform.
+
+11. LIABILITY
+
+11.1 Provider excludes all liability to Customer for any loss. Customer's liability to Provider is unlimited.
+
+12. ENDING THE AGREEMENT
+
+12.1 Customer has no right to terminate this Agreement during the initial period. Provider may end the Agreement at any time without prior notice, and no refund will be given.
+
+13. SUBCONTRACTORS
+
+13.1 Provider may subcontract any part of the services without the consent of Customer.
+
+14. ASSIGNMENT
+
+14.1 Provider may assign this Agreement without the consent of Customer.
+
+15. GENERAL
+
+15.1 This Agreement is the entire agreement between the parties. Any dispute will be settled in the courts chosen by Provider.

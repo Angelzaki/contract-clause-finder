@@ -1,0 +1,119 @@
+MASTER SERVICES AGREEMENT
+
+This Master Services Agreement (the "Agreement") is entered into between Andes Cloud Systems S.A.C. ("Provider") and Pacifico Retail Group S.A. ("Customer").
+
+1. SERVICES AND SUBSCRIPTION
+
+1.1 Provider grants Customer a non-exclusive right to access and use the Services, a hosted software-as-a-service platform, during the Term for its Authorized Users, as described in each Order Form.
+
+1.2 Provider shall give Customer ninety (90) days' written notice before retiring any material feature of the Services.
+
+2. TERM AND RENEWAL
+
+2.1 The initial term of this Agreement is twelve (12) months from the Effective Date. Thereafter the Agreement renews for successive renewal terms of one (1) year each unless either party gives sixty (60) days' written notice of non-renewal.
+
+3. FEES AND PAYMENT
+
+3.1 Customer shall pay the fees set out in each Order Form. Provider shall issue an invoice monthly in arrears and each undisputed invoice is payable within thirty (30) days of receipt.
+
+3.2 Fees are fixed for the initial term. Fees may increase on renewal only with ninety (90) days' written notice. A late payment accrues interest on overdue amounts at one percent (1%) per month. Fees exclude taxes. Customer may withhold amounts disputed in good faith while the parties resolve the dispute.
+
+4. SERVICE LEVELS
+
+4.1 Provider shall maintain monthly Availability of the Services of at least 99.9%, excluding scheduled maintenance announced five (5) days in advance.
+
+4.2 If monthly uptime falls below the commitment, Provider shall issue Service Credits of five percent (5%) to twenty-five percent (25%) of the monthly fee. Credits do not limit Customer's right to terminate for chronic failure. Provider shall provide support during business hours with a response time of four (4) hours for critical incidents.
+
+5. DATA PROTECTION
+
+5.1 Customer Data includes all Personal Data that Customer submits to the Services. Provider shall process Personal Data only on Customer's documented instructions and in accordance with the Data Processing Addendum and all applicable data protection laws, including the GDPR where it applies.
+
+5.2 Any cross-border transfer of Personal Data requires the standard contractual clauses or an equivalent lawful transfer mechanism. Customer Data is hosted in the region selected in the Order Form.
+
+6. SECURITY INCIDENT NOTIFICATION
+
+6.1 Provider shall notify Customer of any Security Incident affecting Customer Data without undue delay and in any event within seventy-two (72) hours of becoming aware of it.
+
+6.2 Provider shall investigate the Security Incident, take steps to mitigate its effects, cooperate with Customer, and provide a written root cause report.
+
+7. INFORMATION SECURITY
+
+7.1 Provider maintains a written information security program with administrative, technical and physical safeguards. Customer Data is encrypted in transit and at rest, access controls enforce least privilege, and multi-factor authentication is required for all administrative access.
+
+7.2 Provider holds a current SOC 2 Type II report, performs annual penetration tests, remediates vulnerabilities within defined timelines, and keeps encrypted backups tested quarterly.
+
+8. CONFIDENTIALITY
+
+8.1 Each party shall hold the other party's Confidential Information in strict confidence, shall not disclose it to any third party, and shall use it only to perform this Agreement.
+
+8.2 Confidential Information excludes information that is publicly available, already known to the recipient, or independently developed. A party may disclose Confidential Information where required by law after giving the other party prompt notice.
+
+8.3 These obligations survive for five (5) years after termination. On request each party shall return or destroy the other party's Confidential Information.
+
+9. INTELLECTUAL PROPERTY
+
+9.1 Customer retains all ownership of and title to Customer Data and Customer content. Provider retains all intellectual property rights in the Services and reserves all rights not expressly granted.
+
+9.2 Provider may use aggregated, de-identified usage data only to operate and improve the Services. Customer grants Provider a limited license to process Customer Data solely to provide the Services.
+
+10. WARRANTIES
+
+10.1 Provider warrants that the Services will perform materially in accordance with the Documentation, that it will perform the Services in a professional and workmanlike manner, and that the Services will be free of malware and viruses.
+
+10.2 Provider warrants compliance with applicable laws. If the Services breach this warranty, Provider shall re-perform or repair the Services, or refund the affected fees.
+
+11. INDEMNIFICATION
+
+11.1 Provider shall defend, indemnify and hold harmless Customer against any third-party claim alleging that the Services infringe or misappropriate intellectual property rights, and shall pay the damages, costs and expenses finally awarded.
+
+11.2 Customer shall give Provider prompt notice of the claim and sole control of the defense and settlement, and Provider shall not settle in a manner that imposes liability on Customer without its consent.
+
+12. LIMITATION OF LIABILITY
+
+12.1 Each party's total aggregate liability arising out of this Agreement is limited to the fees paid or payable in the twelve (12) months before the event giving rise to the claim.
+
+12.2 Neither party is liable for indirect, consequential, special or incidental damages. These limits do not apply to fraud, gross negligence, willful misconduct, indemnification obligations under section 11, or a data breach caused by Provider's breach of section 7.
+
+13. TERMINATION
+
+13.1 Either party may terminate this Agreement for material breach by the other party that remains uncured thirty (30) days after written notice describing the breach.
+
+13.2 Customer may terminate for convenience on sixty (60) days' written notice, and either party may terminate immediately on the other party's insolvency or bankruptcy.
+
+13.3 Upon termination Provider shall refund prepaid fees for the period after the effective date of termination.
+
+14. DATA RETURN AND DELETION
+
+14.1 For thirty (30) days after termination Provider shall make Customer Data available for export in a machine-readable format and shall provide reasonable transition assistance.
+
+14.2 Provider shall then delete all Customer Data within thirty (30) days and certify the deletion in writing on request.
+
+15. SUBPROCESSORS
+
+15.1 Provider maintains a current list of Subprocessors and shall notify Customer thirty (30) days before engaging a new Subprocessor. Customer may object on reasonable data protection grounds.
+
+15.2 Provider shall bind each Subprocessor to a written agreement with the same obligations and remains liable for its Subprocessors' performance.
+
+16. AUDIT AND COMPLIANCE REPORTING
+
+16.1 Provider shall deliver its SOC 2 report annually. Customer may audit Provider's compliance once per year on reasonable notice, subject to confidentiality obligations.
+
+17. GOVERNING LAW
+
+17.1 This Agreement is governed by the laws of the Republic of Peru, without regard to conflict of laws rules.
+
+18. DISPUTE RESOLUTION
+
+18.1 The parties shall first attempt to resolve any dispute through good faith negotiation between senior executives for thirty (30) days. Unresolved disputes are submitted to the exclusive jurisdiction of the courts of Lima, Peru, and either party may seek injunctive relief in any competent venue.
+
+19. ASSIGNMENT
+
+19.1 Neither party may assign this Agreement without the other party's prior written consent, except to a successor in a merger or acquisition on written notice. This Agreement is binding upon permitted successors and assigns.
+
+20. FORCE MAJEURE
+
+20.1 Neither party is liable for delay caused by events beyond its reasonable control. The affected party shall give notice and mitigate the effects. If the event lasts more than thirty (30) days either party may terminate the affected Order Form.
+
+21. INSURANCE
+
+21.1 Provider shall maintain commercial general liability insurance and cyber liability insurance of at least $5,000,000 per claim and shall provide certificates of insurance on request.

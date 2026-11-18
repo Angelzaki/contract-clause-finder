@@ -1,0 +1,495 @@
+{
+  "name": "SaaS MSA baseline",
+  "version": "1.0",
+  "description": "Playbook de cláusulas esperadas en un contrato marco de SaaS desde la posición del cliente.",
+  "clauses": [
+    {
+      "id": "TERM-01",
+      "title": "Term and renewal",
+      "critical": false,
+      "weight": 1,
+      "must_have": [
+        "initial term|subscription term|term of this agreement",
+        "renew*|renewal"
+      ],
+      "keywords": ["non-renewal|notice of non-renewal", "successive|additional term|renewal term"],
+      "risk_flags": [
+        {
+          "id": "evergreen",
+          "pattern": "evergreen|perpetual(?:ly)?\\s+renew\\w*",
+          "note": "Renovación perpetua sin salida clara",
+          "severity": "high"
+        },
+        {
+          "id": "long-renewal",
+          "pattern": "renew\\w*[^.]{0,80}(?:three|five|3|5)\\s*(?:\\(\\d\\)\\s*)?years?",
+          "note": "Periodos de renovación largos (3 o más años)",
+          "severity": "medium"
+        }
+      ],
+      "if_missing": "Sin plazo ni renovación definidos: el contrato puede quedar abierto o renovarse sin control",
+      "suggestion": "The initial term is twelve (12) months. The agreement renews for successive one-year terms unless either party gives sixty (60) days' notice of non-renewal."
+    },
+    {
+      "id": "SVC-01",
+      "title": "Services and subscription grant",
+      "critical": false,
+      "weight": 2,
+      "must_have": [
+        "right to access and use|access to and use|subscription to|grants customer|grants to customer",
+        "services|platform|software-as-a-service"
+      ],
+      "keywords": ["order form|statement of work", "authorized users", "non-exclusive"],
+      "risk_flags": [
+        {
+          "id": "unilateral-change",
+          "pattern": "(?:modify|change|discontinue)\\w*\\s+(?:the\\s+)?(?:services|features|platform)[^.]{0,80}(?:without\\s+(?:prior\\s+)?notice|at any time|sole discretion)",
+          "note": "El proveedor puede modificar o descontinuar el servicio unilateralmente",
+          "severity": "high"
+        }
+      ],
+      "if_missing": "No se define qué servicio se contrata ni quién puede usarlo",
+      "suggestion": "Provider grants Customer a non-exclusive right to access and use the Services during the Term for its Authorized Users, as described in each Order Form."
+    },
+    {
+      "id": "FEE-01",
+      "title": "Fees and payment terms",
+      "critical": false,
+      "weight": 2,
+      "must_have": [
+        "fees",
+        "invoice*|payable|payment",
+        "re:(?:net\\s*\\d+|within\\s+[\\w-]+\\s*(?:\\(\\d+\\)\\s*)?days)"
+      ],
+      "keywords": ["late fee*|interest on overdue|late payment", "taxes", "disputed|dispute"],
+      "risk_flags": [
+        {
+          "id": "price-increase",
+          "pattern": "(?:increase|adjust|change)\\w*\\s+(?:the\\s+)?(?:fees|prices?)[^.]{0,80}(?:at any time|without\\s+(?:prior\\s+)?notice|sole discretion)",
+          "note": "Cambio de precios sin aviso ni tope",
+          "severity": "high"
+        },
+        {
+          "id": "non-refundable",
+          "pattern": "non-?refundable",
+          "note": "Tarifas no reembolsables",
+          "severity": "low"
+        }
+      ],
+      "if_missing": "Sin condiciones de pago: riesgo de disputas de facturación y cobros arbitrarios",
+      "suggestion": "Customer pays undisputed invoices within thirty (30) days of receipt. Fees are fixed for the Term and may be increased only on renewal with ninety (90) days' written notice."
+    },
+    {
+      "id": "SLA-01",
+      "title": "Service levels and availability",
+      "critical": false,
+      "weight": 2,
+      "must_have": [
+        "uptime|availability",
+        "re:\\d{2}(?:\\.\\d+)?\\s*%",
+        "service credit*|credits|remed*"
+      ],
+      "keywords": ["scheduled maintenance|maintenance window", "support", "response time*", "monthly"],
+      "risk_flags": [
+        {
+          "id": "exclusive-remedy",
+          "pattern": "sole and exclusive remedy",
+          "note": "Los créditos de servicio son el único remedio",
+          "severity": "medium"
+        }
+      ],
+      "if_missing": "Sin compromiso de disponibilidad medible ni compensación por caídas",
+      "suggestion": "Provider shall maintain monthly Availability of at least 99.9% and issue Service Credits for any shortfall."
+    },
+    {
+      "id": "DATA-01",
+      "title": "Data protection and processing",
+      "critical": true,
+      "weight": 3,
+      "must_have": [
+        "personal data|personal information|customer data",
+        "documented instructions|written instructions|data processing agreement|data processing addendum|dpa",
+        "applicable data protection law*|gdpr|ccpa|privacy laws|data protection legislation"
+      ],
+      "keywords": [
+        "cross-border|international transfer*|standard contractual clauses",
+        "data residency|region",
+        "delet*|return*"
+      ],
+      "risk_flags": [
+        {
+          "id": "own-use",
+          "pattern": "(?:use|analy[sz]e|share|sell)\\w*\\s+(?:customer\\s+data|personal data)[^.]{0,80}(?:for its own|for any (?:other )?purpose|marketing|commercial purposes)",
+          "note": "El proveedor puede usar datos del cliente para fines propios",
+          "severity": "high"
+        }
+      ],
+      "if_missing": "Sin reglas de tratamiento de datos personales: incumplimiento regulatorio probable",
+      "suggestion": "Provider processes Personal Data only on Customer's documented instructions and in accordance with the Data Processing Addendum and applicable data protection laws."
+    },
+    {
+      "id": "BRCH-01",
+      "title": "Security incident notification",
+      "critical": true,
+      "weight": 3,
+      "must_have": [
+        "security incident*|data breach*|breach of security|personal data breach",
+        "notif*",
+        "re:within\\s+[\\w-]+\\s*(?:\\(\\d+\\)\\s*)?(?:hours|business days|days)|without undue delay|promptly|as soon as (?:reasonably )?(?:practicable|possible)"
+      ],
+      "keywords": ["investigat*", "remediat*|mitigat*", "cooperat*"],
+      "risk_flags": [
+        {
+          "id": "no-deadline",
+          "pattern": "promptly|as soon as (?:reasonably )?(?:practicable|possible)",
+          "note": "Notificación sin plazo fijo en horas o días",
+          "severity": "medium"
+        }
+      ],
+      "if_missing": "Sin obligación de avisar incidentes de seguridad: el cliente puede enterarse tarde o nunca",
+      "suggestion": "Provider shall notify Customer of any Security Incident without undue delay and in any event within seventy-two (72) hours of becoming aware."
+    },
+    {
+      "id": "SEC-01",
+      "title": "Information security measures",
+      "critical": true,
+      "weight": 3,
+      "must_have": [
+        "security program|security measures|security controls|technical and organizational measures|safeguards",
+        "encrypt*",
+        "access control*|multi-factor|authentication"
+      ],
+      "keywords": [
+        "soc 2|iso 27001|iso/iec 27001",
+        "penetration test*|vulnerabilit*",
+        "backup*",
+        "audit*"
+      ],
+      "risk_flags": [
+        {
+          "id": "security-disclaimer",
+          "pattern": "(?:not|no)\\s+(?:be\\s+)?(?:responsible|liable)\\s+for\\s+(?:any\\s+)?(?:security|unauthori[sz]ed)",
+          "note": "El proveedor se desliga de fallos de seguridad",
+          "severity": "high"
+        }
+      ],
+      "if_missing": "Sin controles de seguridad exigibles al proveedor",
+      "suggestion": "Provider maintains a written security program with encryption of Customer Data in transit and at rest, role-based access controls and multi-factor authentication."
+    },
+    {
+      "id": "CONF-01",
+      "title": "Confidentiality",
+      "critical": true,
+      "weight": 3,
+      "must_have": [
+        "confidential information",
+        "re:(?:not|never)\\s+disclos\\w+|(?:hold|keep|maintain)\\s+in\\s+(?:strict\\s+)?confidence|non-disclosure",
+        "publicly available|already known|independently developed|exclusion*"
+      ],
+      "keywords": [
+        "compelled disclosure|required by law",
+        "surviv*|years",
+        "return or destroy|destroy"
+      ],
+      "risk_flags": [
+        {
+          "id": "short-survival",
+          "pattern": "confidentiality\\s+obligations?[^.]{0,80}(?:expire|end|cease)\\s+(?:upon|on|at|with)\\s+(?:the\\s+)?(?:termination|expiration)",
+          "note": "La confidencialidad termina junto con el contrato",
+          "severity": "medium"
+        }
+      ],
+      "if_missing": "Sin deber de confidencialidad: información comercial expuesta",
+      "suggestion": "Each party shall hold the other's Confidential Information in confidence, use it only to perform this Agreement, and protect it for five (5) years after termination."
+    },
+    {
+      "id": "IP-01",
+      "title": "Intellectual property and customer content",
+      "critical": false,
+      "weight": 2,
+      "must_have": [
+        "intellectual property|proprietary rights",
+        "re:\\b(?:retains?|owns?|ownership|title)\\b",
+        "customer data|customer content|feedback|licen[sc]e"
+      ],
+      "keywords": ["reserves all rights|reserved", "derivative", "usage data|aggregated"],
+      "risk_flags": [
+        {
+          "id": "broad-license",
+          "pattern": "(?:perpetual|irrevocable)[^.]{0,80}licen[sc]e[^.]{0,80}customer\\s+(?:data|content)",
+          "note": "Licencia perpetua e irrevocable sobre contenido del cliente",
+          "severity": "high"
+        }
+      ],
+      "if_missing": "Sin reparto de propiedad intelectual: riesgo sobre datos y entregables del cliente",
+      "suggestion": "Customer retains all rights in Customer Data; Provider retains all rights in the Services and grants Customer a license to use them as provided here."
+    },
+    {
+      "id": "WAR-01",
+      "title": "Warranties and disclaimers",
+      "critical": false,
+      "weight": 2,
+      "must_have": [
+        "warrant*",
+        "re:professional\\s+and\\s+workmanlike|(?:substantially|materially)\\s+(?:in accordance|conform)\\w*|conform\\w*\\s+to\\s+(?:the\\s+)?documentation",
+        "remedy|remedies|re-perform*|repair|refund"
+      ],
+      "keywords": ["malware|virus*", "compl* with applicable laws|compliance with laws", "disclaim*"],
+      "risk_flags": [
+        {
+          "id": "disclaim-all",
+          "pattern": "disclaims?\\s+all\\s+(?:express\\s+or\\s+implied\\s+)?warrant\\w+",
+          "note": "Descargo total de garantías",
+          "severity": "medium"
+        }
+      ],
+      "if_missing": "Sin garantías de desempeño del servicio",
+      "suggestion": "Provider warrants that the Services will perform materially in accordance with the Documentation and will re-perform or refund fees if they do not."
+    },
+    {
+      "id": "IND-01",
+      "title": "Indemnification",
+      "critical": true,
+      "weight": 3,
+      "must_have": [
+        "indemnif*|hold harmless",
+        "re:third[-\\s]party\\s+claims?|claims?\\s+(?:brought|made|asserted)\\s+by\\s+(?:a\\s+)?third|claims?\\s+by\\s+third\\s+parties",
+        "infring*|misappropriat*",
+        "defend*|defense"
+      ],
+      "keywords": [
+        "prompt notice|notice of the claim",
+        "settle*|settlement",
+        "sole control|control of the defense",
+        "damages|costs|expenses"
+      ],
+      "risk_flags": [
+        {
+          "id": "one-sided-indemnity",
+          "pattern": "customer\\s+shall\\s+indemnif\\w+[^.]{0,100}(?:any and all|all)\\s+(?:claims|losses|damages)",
+          "note": "Indemnización amplia a cargo solo del cliente",
+          "severity": "medium"
+        },
+        {
+          "id": "uncapped-indemnity",
+          "pattern": "indemnif\\w+[^.]{0,60}(?:unlimited|without limit)",
+          "note": "Indemnización sin límite",
+          "severity": "high"
+        }
+      ],
+      "if_missing": "Sin indemnidad por reclamos de terceros (PI, datos): el cliente absorbe el riesgo",
+      "suggestion": "Provider shall defend and indemnify Customer against third-party claims alleging that the Services infringe or misappropriate intellectual property rights."
+    },
+    {
+      "id": "LIAB-01",
+      "title": "Limitation of liability",
+      "critical": true,
+      "weight": 3,
+      "must_have": [
+        "aggregate liability|total liability|maximum liability|total cumulative liability|cumulative liability|liability shall not exceed",
+        "re:fees\\s+(?:paid|payable)|amounts?\\s+paid|\\$\\s?[\\d,]+|(?:twelve|12)\\s*(?:\\(12\\)\\s*)?months",
+        "indirect|consequential|special|incidental|punitive"
+      ],
+      "keywords": [
+        "exclusion*|carve-out*|except",
+        "gross negligence|willful misconduct|fraud",
+        "data breach|indemnif*",
+        "each party|mutual*"
+      ],
+      "risk_flags": [
+        {
+          "id": "unlimited-liability",
+          "pattern": "unlimited\\s+liabilit\\w+|liabilit\\w+\\s+(?:shall\\s+be\\s+|is\\s+)?unlimited|without\\s+(?:any\\s+)?(?:limit|cap)",
+          "note": "Lenguaje de responsabilidad ilimitada",
+          "severity": "high"
+        },
+        {
+          "id": "provider-excludes-all",
+          "pattern": "(?:exclude|disclaim)s?\\s+(?:all|any)\\s+liabilit\\w+",
+          "note": "El proveedor excluye toda responsabilidad",
+          "severity": "high"
+        },
+        {
+          "id": "customer-uncapped",
+          "pattern": "customer(?:'s)?\\s+liabilit\\w+\\s+(?:shall\\s+)?(?:not\\s+be\\s+limited|is\\s+unlimited)",
+          "note": "Tope solo a favor del proveedor",
+          "severity": "high"
+        }
+      ],
+      "if_missing": "Sin tope de responsabilidad: exposición económica efectivamente ilimitada",
+      "suggestion": "Each party's total aggregate liability is limited to the fees paid or payable in the twelve (12) months before the claim; neither party is liable for indirect or consequential damages, except for fraud, gross negligence or data breach."
+    },
+    {
+      "id": "TRM-01",
+      "title": "Termination rights",
+      "critical": true,
+      "weight": 3,
+      "must_have": [
+        "terminat*",
+        "material breach|breach of this agreement",
+        "cure*|uncured|remed*",
+        "re:(?:thirty|sixty|fifteen|ninety|\\d+)\\s*(?:\\(\\d+\\)\\s*)?(?:calendar\\s+|business\\s+)?days"
+      ],
+      "keywords": [
+        "convenience|without cause",
+        "insolven*|bankrupt*",
+        "effect of termination|upon termination",
+        "refund*|prepaid"
+      ],
+      "risk_flags": [
+        {
+          "id": "terminate-no-notice",
+          "pattern": "terminat\\w+[^.]{0,80}without\\s+(?:prior\\s+)?notice|immediate(?:ly)?\\s+terminat\\w+[^.]{0,40}(?:sole\\s+discretion|any\\s+reason)",
+          "note": "Terminación sin aviso previo",
+          "severity": "high"
+        },
+        {
+          "id": "no-refund",
+          "pattern": "no\\s+refund",
+          "note": "Sin reembolso al terminar",
+          "severity": "medium"
+        }
+      ],
+      "if_missing": "Sin derechos de terminación: el cliente queda atado al contrato sin salida ante incumplimiento",
+      "suggestion": "Either party may terminate for material breach not cured within thirty (30) days of notice. Customer may terminate for convenience on sixty (60) days' notice with a refund of prepaid unused fees."
+    },
+    {
+      "id": "RET-01",
+      "title": "Data return and deletion",
+      "critical": false,
+      "weight": 2,
+      "must_have": [
+        "return*|export*|retriev*",
+        "customer data|your data",
+        "delet*|destr*"
+      ],
+      "keywords": ["transition assistance|transition", "machine-readable|format", "certif*"],
+      "risk_flags": [
+        {
+          "id": "retain-forever",
+          "pattern": "(?:retain|keep)\\s+(?:customer\\s+data|copies)[^.]{0,60}(?:indefinitely|in perpetuity|perpetual)",
+          "note": "El proveedor conserva datos del cliente indefinidamente",
+          "severity": "high"
+        }
+      ],
+      "if_missing": "Sin devolución ni borrado de datos al terminar: riesgo de lock-in y retención indebida",
+      "suggestion": "Within thirty (30) days after termination Provider shall return Customer Data in a machine-readable format and then delete it, certifying deletion on request."
+    },
+    {
+      "id": "SUB-01",
+      "title": "Subprocessors and subcontractors",
+      "critical": false,
+      "weight": 2,
+      "must_have": [
+        "subprocessor*|sub-processor*|subcontractor*",
+        "re:notice|notify|notification|inform\\w*|prior\\s+(?:written\\s+)?(?:consent|authori[sz]ation)|list\\s+of",
+        "object*|written agreement|same obligations|equivalent"
+      ],
+      "keywords": ["liable for|responsible for", "current list|published list"],
+      "risk_flags": [
+        {
+          "id": "subcontract-no-notice",
+          "pattern": "subcontract\\w*[^.]{0,80}without\\s+(?:the\\s+)?(?:notice|consent)",
+          "note": "Subcontratación sin aviso ni consentimiento",
+          "severity": "medium"
+        }
+      ],
+      "if_missing": "Sin control sobre terceros que acceden a los datos",
+      "suggestion": "Provider shall give thirty (30) days' notice of new Subprocessors, bind them to equivalent obligations, and remain liable for their performance."
+    },
+    {
+      "id": "AUD-01",
+      "title": "Audit and compliance reporting",
+      "critical": false,
+      "weight": 1,
+      "must_have": [
+        "audit*|inspect*|assessment*",
+        "soc 2|iso 27001|independent audit|third-party audit|questionnaire*|compliance report*"
+      ],
+      "keywords": ["annual*|once per year|annually", "reasonable notice|advance notice", "confidential*"],
+      "risk_flags": [],
+      "if_missing": "Sin derecho de verificación del cumplimiento del proveedor",
+      "suggestion": "Provider shall provide its current SOC 2 Type II report annually and permit a Customer audit on reasonable notice once per year."
+    },
+    {
+      "id": "LAW-01",
+      "title": "Governing law",
+      "critical": false,
+      "weight": 2,
+      "must_have": [
+        "governed by|governing law|construed in accordance with",
+        "laws of|law of"
+      ],
+      "keywords": ["without regard to|conflict of laws", "state|republic|country"],
+      "risk_flags": [],
+      "if_missing": "Sin ley aplicable: incertidumbre sobre el régimen que rige el contrato",
+      "suggestion": "This Agreement is governed by the laws of the Republic of Peru, without regard to conflict-of-laws rules."
+    },
+    {
+      "id": "DISP-01",
+      "title": "Dispute resolution and venue",
+      "critical": false,
+      "weight": 1,
+      "must_have": [
+        "dispute*|controvers*",
+        "arbitrat*|mediat*|court*|jurisdiction|escalat*"
+      ],
+      "keywords": ["venue", "injunctive relief", "negotiat*|good faith"],
+      "risk_flags": [],
+      "if_missing": "Sin mecanismo ni foro para resolver disputas",
+      "suggestion": "Disputes are escalated to senior executives for thirty (30) days, then submitted to the exclusive jurisdiction of the courts of Lima."
+    },
+    {
+      "id": "ASG-01",
+      "title": "Assignment and change of control",
+      "critical": false,
+      "weight": 1,
+      "must_have": [
+        "assign*",
+        "consent|approval|notice",
+        "change of control|merger|acquisition|successor*"
+      ],
+      "keywords": ["binding upon|binding on", "affiliate*"],
+      "risk_flags": [
+        {
+          "id": "free-assignment",
+          "pattern": "provider\\s+may\\s+assign[^.]{0,80}without\\s+(?:the\\s+)?(?:consent|notice)",
+          "note": "El proveedor puede ceder el contrato sin consentimiento",
+          "severity": "medium"
+        }
+      ],
+      "if_missing": "Sin reglas de cesión: el contrato puede pasar a un tercero sin control del cliente",
+      "suggestion": "Neither party may assign this Agreement without the other's prior written consent, except to a successor in a merger or sale of substantially all assets on notice."
+    },
+    {
+      "id": "FM-01",
+      "title": "Force majeure",
+      "critical": false,
+      "weight": 1,
+      "must_have": [
+        "force majeure",
+        "re:beyond\\s+(?:its|their|the)\\s+reasonable\\s+control|events?\\s+beyond",
+        "terminat*|suspen*|excus*|relie*"
+      ],
+      "keywords": ["notice", "mitigat*"],
+      "risk_flags": [],
+      "if_missing": "Sin cláusula de fuerza mayor: reglas de excusa de incumplimiento indefinidas",
+      "suggestion": "Neither party is liable for delay caused by events beyond its reasonable control; if the event lasts more than thirty (30) days either party may terminate."
+    },
+    {
+      "id": "INS-01",
+      "title": "Insurance",
+      "critical": false,
+      "weight": 1,
+      "must_have": [
+        "insurance",
+        "commercial general liability|cyber|errors and omissions|professional liability|coverage",
+        "re:\\$\\s?[\\d,.]+(?:\\s*(?:million|m)\\b)?|per\\s+(?:occurrence|claim)|minimum"
+      ],
+      "keywords": ["certificate*", "maintain*"],
+      "risk_flags": [],
+      "if_missing": "Sin seguros exigidos al proveedor: la responsabilidad podría no estar respaldada",
+      "suggestion": "Provider shall maintain cyber liability insurance of at least $5,000,000 per claim and provide certificates on request."
+    }
+  ]
+}

@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>contract-clause-finder</title>
+  <style>
+    :root {
+      --bg: #f4f5f7; --card: #fff; --ink: #1d2733; --muted: #6b7684; --line: #dde1e7;
+      --ok: #157347; --ok-bg: #d9f0e3; --warn: #8a6100; --warn-bg: #fff1c7;
+      --bad: #b02a37; --bad-bg: #f8d9dc; --accent: #1f4e8c;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, "Segoe UI", sans-serif; }
+    main { max-width: 1180px; margin: 0 auto; padding: 24px 16px 40px; }
+    header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    h1 { font-size: 22px; margin: 0; }
+    h2 { font-size: 16px; margin: 0 0 10px; }
+    .sub { color: var(--muted); }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    select, input, textarea, button { font: inherit; }
+    select, input[type=text], textarea { border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; background: #fff; color: var(--ink); }
+    textarea { width: 100%; min-height: 90px; font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+    button { border: 1px solid var(--accent); background: var(--accent); color: #fff; border-radius: 6px; padding: 7px 14px; cursor: pointer; }
+    button.ghost { background: #fff; color: var(--accent); }
+    button:disabled { opacity: .55; cursor: wait; }
+    .checks label { display: inline-flex; gap: 6px; align-items: center; margin: 0 12px 0 0; color: var(--ink); font-size: 13px; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .stat { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+    .stat .v { font-size: 26px; font-weight: 650; }
+    .stat .k { font-size: 12px; color: var(--muted); }
+    table { width: 100%; border-collapse: collapse; background: var(--card); }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { font-size: 12px; color: var(--muted); font-weight: 600; background: #fafbfc; position: sticky; top: 0; }
+    tr.clause { cursor: pointer; }
+    tr.clause:hover td { background: #f7f9fc; }
+    .badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+    .b-found { background: var(--ok-bg); color: var(--ok); }
+    .b-partial { background: var(--warn-bg); color: var(--warn); }
+    .b-missing { background: var(--bad-bg); color: var(--bad); }
+    .r-none { color: var(--muted); }
+    .r-low { color: var(--warn); }
+    .r-medium { color: #b25b00; font-weight: 600; }
+    .r-high { color: var(--bad); font-weight: 700; }
+    .crit { font-size: 11px; border: 1px solid var(--bad); color: var(--bad); border-radius: 4px; padding: 0 4px; margin-left: 6px; }
+    .quote { border-left: 3px solid var(--line); padding-left: 10px; color: #33404f; font-size: 13px; }
+    .loc { font: 11px ui-monospace, Consolas, monospace; color: var(--muted); }
+    mark { background: #ffe58a; padding: 0 1px; }
+    .detail td { background: #fafbfc; }
+    .detail ul { margin: 4px 0 8px; padding-left: 18px; }
+    .detail .neg { border-left-color: var(--bad); color: var(--bad); }
+    .detail .sug { color: var(--muted); font-style: italic; }
+    .filters button { margin-right: 6px; padding: 3px 10px; font-size: 12px; }
+    .filters button.on { background: var(--accent); color: #fff; }
+    .hidden { display: none; }
+    .err { color: var(--bad); margin-left: 8px; }
+    .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 28px; }
+    code { font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>contract-clause-finder</h1>
+    <span class="sub">playbook &rarr; cláusulas con cita y offsets &rarr; cobertura &middot; v{{ version }}</span>
+  </header>
+
+  <section class="card">
+    <div class="row">
+      <div>
+        <label for="playbook">Playbook</label>
+        <select id="playbook">
+          {% for p in samples.playbooks %}
+          <option value="{{ p }}" {% if p == default_playbook %}selected{% endif %}>{{ p }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="checks">
+        <label>Contratos de muestra</label>
+        {% for c in samples.contracts %}
+        <label><input type="checkbox" name="sample" value="{{ c }}" {% if c == good %}checked{% endif %}> {{ c }}</label>
+        {% endfor %}
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <label for="paste">Texto de contrato propio (opcional)</label>
+      <textarea id="paste" placeholder="Pega aquí el texto de un contrato"></textarea>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button id="scan">Escanear</button>
+      <button id="compare" class="ghost">Comparar {{ good }} vs {{ weak }}</button>
+      <button id="hist" class="ghost">Historial</button>
+      <span id="msg" class="err"></span>
+    </div>
+  </section>
+
+  <div id="out" class="hidden">
+    <div class="stats" id="stats"></div>
+    <section class="card" id="critBox"></section>
+    <section class="card">
+      <div class="row" style="justify-content:space-between;margin-bottom:8px">
+        <h2 style="margin:0">Matriz cláusula &times; estado</h2>
+        <div class="filters" id="filters">
+          <button data-f="all" class="on">todas</button>
+          <button data-f="found">found</button>
+          <button data-f="partial">partial</button>
+          <button data-f="missing">missing</button>
+          <button data-f="risk">con riesgo</button>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>ID</th><th>Cláusula</th><th>Estado</th><th>Pts</th><th>Riesgo</th><th>Cita</th></tr></thead>
+        <tbody id="matrix"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <section class="card hidden" id="cmpBox"></section>
+  <section class="card hidden" id="histBox"></section>
+
+  <footer>Hecho en Lima &middot; Angel Salazar &middot; CIP 404730</footer>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const flat = (s) => s.replace(/\s+/g, " ").trim();
+let current = null;
+let filter = "all";
+
+async function api(path, opts) {
+  const res = await fetch(path, opts);
+  if (!res.ok) {
+    let detail = res.statusText;
+    try { detail = (await res.json()).detail || detail; } catch (e) {}
+    throw new Error(typeof detail === "string" ? detail : JSON.stringify(detail));
+  }
+  return res.json();
+}
+
+function busy(on) {
+  ["scan", "compare", "hist"].forEach((id) => { $(id).disabled = on; });
+  if (on) $("msg").textContent = "";
+}
+
+function loc(s) { return `${esc(s.doc)}:L${s.line} [${s.start}&ndash;${s.end}]`; }
+
+function highlight(quote, evidence) {
+  const spans = evidence
+    .filter((e) => e.doc === quote.doc && e.start >= quote.start && e.end <= quote.end)
+    .map((e) => [e.start - quote.start, e.end - quote.start])
+    .sort((a, b) => a[0] - b[0]);
+  let out = "", pos = 0;
+  for (const [s, e] of spans) {
+    if (s < pos) continue;
+    out += esc(quote.text.slice(pos, s)) + "<mark>" + esc(quote.text.slice(s, e)) + "</mark>";
+    pos = e;
+  }
+  return out + esc(quote.text.slice(pos));
+}
+
+function renderStats(d) {
+  const c = d.counts;
+  const items = [
+    [d.coverage_pct + "%", "cobertura"],
+    [d.risk_adjusted_pct + "%", "ajustada por riesgo"],
+    [d.verdict, "veredicto"],
+    [`${c.found} / ${c.partial} / ${c.missing}`, "found / partial / missing"],
+    [d.critical_missing.length, "críticas faltantes"],
+  ];
+  $("stats").innerHTML = items.map(([v, k]) => `<div class="stat"><div class="v">${esc(v)}</div><div class="k">${esc(k)}</div></div>`).join("");
+}
+
+function renderCritical(d) {
+  const titles = Object.fromEntries(d.results.map((r) => [r.clause_id, r.title]));
+  const miss = d.critical_missing.map((id) => `<li><code>${esc(id)}</code> ${esc(titles[id])}</li>`).join("");
+  const part = d.critical_gaps.filter((id) => !d.critical_missing.includes(id)).map((id) => `<code>${esc(id)}</code>`).join(", ");
+  $("critBox").innerHTML = `<h2>Críticas faltantes</h2>` +
+    (miss ? `<ul>${miss}</ul>` : `<div class="sub">Ninguna cláusula crítica ausente.</div>`) +
+    (part ? `<div class="sub" style="margin-top:6px">Críticas con cobertura parcial: ${part}</div>` : "") +
+    `<div class="sub" style="margin-top:6px">Contratos: ${esc(d.contracts.join(", "))}</div>`;
+}
+
+function detailHtml(r) {
+  let h = "";
+  if (r.quote) h += `<div class="quote">${highlight(r.quote, r.evidence)}</div><div class="loc">${loc(r.quote)}</div>`;
+  if (r.evidence.length) {
+    h += "<div style='margin-top:6px'><b>Evidencia por frase</b></div><ul>" +
+      r.evidence.map((e, i) => `<li><code>${esc(e.text)}</code> <span class="loc">${loc(e)}</span> &larr; <code>${esc(r.matched[i] || "")}</code></li>`).join("") + "</ul>";
+  }
+  if (r.unmatched.length) h += "<div><b>Sin evidencia</b>: " + r.unmatched.map((g) => `<code>${esc(g)}</code>`).join(" · ") + "</div>";
+  if (r.counter_evidence.length) {
+    h += "<div style='margin-top:6px'><b>Contra-evidencia (negación)</b></div>" +
+      r.counter_evidence.map((e) => `<div class="quote neg">${esc(flat(e.text))}<div class="loc">${loc(e)}</div></div>`).join("");
+  }
+  if (r.risks.length) {
+    h += "<div style='margin-top:6px'><b>Riesgos</b></div><ul>" + r.risks.map((k) =>
+      `<li><span class="r-${k.severity}">[${k.severity}]</span> ${esc(k.note)}` +
+      (k.span ? ` &mdash; <code>${esc(k.span.text)}</code> <span class="loc">${loc(k.span)}</span>` : "") + "</li>").join("") + "</ul>";
+  }
+  if (r.status !== "found" && r.suggestion) h += `<div class="sug">Texto sugerido: ${esc(r.suggestion)}</div>`;
+  return h;
+}
+
+function visible(r) {
+  if (filter === "all") return true;
+  if (filter === "risk") return r.risk_level === "medium" || r.risk_level === "high";
+  return r.status === filter;
+}
+
+function renderMatrix() {
+  const body = $("matrix");
+  body.innerHTML = "";
+  current.results.filter(visible).forEach((r) => {
+    const tr = document.createElement("tr");
+    tr.className = "clause";
+    const excerpt = r.quote ? esc(flat(r.quote.text).slice(0, 220)) + (flat(r.quote.text).length > 220 ? "…" : "") : "<span class='sub'>sin evidencia</span>";
+    tr.innerHTML = `<td><code>${esc(r.clause_id)}</code></td>` +
+      `<td>${esc(r.title)}${r.critical ? '<span class="crit">crítica</span>' : ""}</td>` +
+      `<td><span class="badge b-${r.status}">${r.status}</span></td>` +
+      `<td>${r.score.toFixed(2)}</td>` +
+      `<td class="r-${r.risk_level}">${r.risk_level}</td>` +
+      `<td><div class="quote">${excerpt}</div>${r.quote ? `<div class="loc">${loc(r.quote)}</div>` : ""}</td>`;
+    const det = document.createElement("tr");
+    det.className = "detail hidden";
+    det.innerHTML = `<td></td><td colspan="5">${detailHtml(r)}</td>`;
+    tr.addEventListener("click", () => det.classList.toggle("hidden"));
+    body.appendChild(tr);
+    body.appendChild(det);
+  });
+}
+
+function showReport(d) {
+  current = d;
+  $("out").classList.remove("hidden");
+  renderStats(d);
+  renderCritical(d);
+  renderMatrix();
+}
+
+$("filters").addEventListener("click", (ev) => {
+  const f = ev.target.dataset.f;
+  if (!f) return;
+  filter = f;
+  document.querySelectorAll("#filters button").forEach((b) => b.classList.toggle("on", b.dataset.f === f));
+  if (current) renderMatrix();
+});
+
+$("scan").addEventListener("click", async () => {
+  busy(true);
+  try {
+    const samples = [...document.querySelectorAll("input[name=sample]:checked")].map((i) => i.value);
+    const text = $("paste").value;
+    const documents = text.trim() ? [{name: "pegado.txt", text}] : [];
+    const d = await api("/api/scan", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({playbook: $("playbook").value, samples, documents, label: "web:scan"}),
+    });
+    $("cmpBox").classList.add("hidden");
+    showReport(d);
+  } catch (e) { $("msg").textContent = e.message; }
+  busy(false);
+});
+
+$("compare").addEventListener("click", async () => {
+  busy(true);
+  try {
+    const c = await api(`/api/compare?playbook=${encodeURIComponent($("playbook").value)}`);
+    const a = c.a.contracts.join(", "), b = c.b.contracts.join(", ");
+    const rows = c.rows.map((r) => `<tr><td><code>${esc(r.clause_id)}</code></td><td>${esc(r.title)}${r.critical ? '<span class="crit">crítica</span>' : ""}</td>` +
+      `<td><span class="badge b-${r.a_status}">${r.a_status}</span></td><td><span class="badge b-${r.b_status}">${r.b_status}</span></td>` +
+      `<td class="r-${r.b_risk}">${r.b_risk}</td><td>${r.delta > 0 ? "+" : ""}${r.delta.toFixed(2)}</td></tr>`).join("");
+    $("cmpBox").innerHTML = `<h2>Comparación</h2><div class="cols2">` +
+      `<div class="stat"><div class="v">${c.a.coverage_pct}%</div><div class="k">${esc(a)} · ${c.a.verdict}</div></div>` +
+      `<div class="stat"><div class="v">${c.b.coverage_pct}%</div><div class="k">${esc(b)} · ${c.b.verdict} · críticas faltantes: ${esc(c.b.critical_missing.join(", ") || "ninguna")}</div></div></div>` +
+      `<table style="margin-top:12px"><thead><tr><th>ID</th><th>Cláusula</th><th>${esc(a)}</th><th>${esc(b)}</th><th>Riesgo</th><th>Δ</th></tr></thead><tbody>${rows}</tbody></table>`;
+    $("cmpBox").classList.remove("hidden");
+  } catch (e) { $("msg").textContent = e.message; }
+  busy(false);
+});
+
+$("hist").addEventListener("click", async () => {
+  busy(true);
+  try {
+    const runs = await api("/api/history?limit=25");
+    const rows = runs.map((r) => `<tr><td>${r.id}</td><td>${esc(r.created_at)}</td><td>${esc(r.contracts)}</td><td>${r.coverage_pct}%</td>` +
+      `<td>${esc(r.verdict)}</td><td>${r.found}/${r.partial}/${r.missing}</td><td>${r.critical_missing}</td>` +
+      `<td><a href="#" data-run="${r.id}">abrir</a></td></tr>`).join("");
+    $("histBox").innerHTML = `<h2>Historial</h2>` + (runs.length
+      ? `<table><thead><tr><th>#</th><th>Fecha</th><th>Contratos</th><th>Cobertura</th><th>Veredicto</th><th>F/P/M</th><th>Crít. faltantes</th><th></th></tr></thead><tbody>${rows}</tbody></table>`
+      : `<div class="sub">Sin corridas todavía.</div>`);
+    $("histBox").classList.remove("hidden");
+  } catch (e) { $("msg").textContent = e.message; }
+  busy(false);
+});
+
+$("histBox").addEventListener("click", async (ev) => {
+  const id = ev.target.dataset.run;
+  if (!id) return;
+  ev.preventDefault();
+  try { showReport(await api(`/api/history/${id}`)); window.scrollTo({top: 0, behavior: "smooth"}); }
+  catch (e) { $("msg").textContent = e.message; }
+});
+</script>
+</body>
+</html>
